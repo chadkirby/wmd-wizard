@@ -113,5 +113,9 @@ export function useWizardState() {
     matchedMachines,
     accessories,
     visibleStepLabels,
+    checkViability: (updates: Partial<WizardState>) => {
+      const nextState = { ...state, ...updates };
+      return filterMachines(nextState, machines).length > 0;
+    },
   };
 }

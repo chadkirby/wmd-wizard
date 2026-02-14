@@ -24,14 +24,15 @@ export function Wizard() {
     matchedMachines,
     accessories,
     visibleStepLabels,
+    checkViability,
   } = useWizardState();
 
   const renderStep = () => {
     switch (currentStep) {
       case 0: return <ContainerStep state={state} update={update} />;
-      case 1: return <ProductStep state={state} update={update} />;
+      case 1: return <ProductStep state={state} update={update} checkViability={checkViability} />;
       case 2: return <DetailsStep state={state} update={update} />;
-      case 3: return <ClosureStep state={state} update={update} />;
+      case 3: return <ClosureStep state={state} update={update} checkViability={checkViability} />;
       case 4: return <ProductionStep state={state} update={update} />;
       case 5: return <ExtrasStep state={state} update={update} />;
       case 6: return <ResultsStep state={state} update={update} matchedMachines={matchedMachines} accessories={accessories} />;

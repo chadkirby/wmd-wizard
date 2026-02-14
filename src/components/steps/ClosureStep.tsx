@@ -6,6 +6,7 @@ import { ToggleField } from '../ToggleField';
 interface Props {
   state: WizardState;
   update: <K extends keyof WizardState>(field: K, value: WizardState[K]) => void;
+  checkViability: (updates: Partial<WizardState>) => boolean;
 }
 
 const bottleClosures: { value: ClosureType; icon: string; label: string }[] = [
@@ -28,7 +29,7 @@ const bucketClosures: { value: ClosureType; icon: string; label: string }[] = [
   { value: 'press-on', icon: '⬇️', label: 'Press-on Lid' },
 ];
 
-export function ClosureStep({ state, update }: Props) {
+export function ClosureStep({ state, update, checkViability }: Props) {
   const isPouch = state.containerType === 'pouch';
   const isBucket = state.containerType === 'bucket';
 
@@ -54,15 +55,19 @@ export function ClosureStep({ state, update }: Props) {
 
         {(state.needsCapping || state.containerType !== 'bottle') && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {closureOptions.map((opt) => (
-              <SelectionCard
-                key={opt.value}
-                icon={opt.icon}
-                label={opt.label}
-                selected={state.closureType === opt.value}
-                onClick={() => update('closureType', opt.value)}
-              />
-            ))}
+            {closureOptions.map((opt) => {
+              const matches = checkViability({ closureType: opt.value });
+              return (
+                <SelectionCard
+                  key={opt.value}
+                  icon={opt.icon}
+                  label={opt.label}
+                  selected={state.closureType === opt.value}
+                  disabled={!matches}
+                  onClick={() => update('closureType', opt.value)}
+                />
+              );
+            })}
           </div>
         )}
       </div>

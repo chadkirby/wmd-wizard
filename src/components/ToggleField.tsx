@@ -2,12 +2,16 @@ interface ToggleFieldProps {
   label: string;
   description?: string;
   checked: boolean;
+  disabled?: boolean;
   onChange: (value: boolean) => void;
 }
 
-export function ToggleField({ label, description, checked, onChange }: ToggleFieldProps) {
+export function ToggleField({ label, description, checked, disabled = false, onChange }: ToggleFieldProps) {
   return (
-    <label className="flex items-center justify-between gap-4 p-3 rounded-lg bg-white border border-gray-200 cursor-pointer hover:border-gray-300 transition-colors">
+    <label className={`flex items-center justify-between gap-4 p-3 rounded-lg border transition-colors ${disabled
+        ? 'bg-gray-50 border-gray-100 cursor-not-allowed opacity-60'
+        : 'bg-white border-gray-200 cursor-pointer hover:border-gray-300'
+      }`}>
       <div className="min-w-0">
         <div className="text-sm font-medium text-gray-800">{label}</div>
         {description && <div className="text-xs text-gray-500 mt-0.5">{description}</div>}
@@ -15,10 +19,15 @@ export function ToggleField({ label, description, checked, onChange }: ToggleFie
       <button
         role="switch"
         type="button"
+        disabled={disabled}
         aria-checked={checked}
-        onClick={() => onChange(!checked)}
+        onClick={() => !disabled && onChange(!checked)}
         className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 ${
-          checked ? 'bg-blue-600' : 'bg-gray-300'
+          disabled
+            ? 'bg-gray-200'
+            : checked
+              ? 'bg-blue-600'
+              : 'bg-gray-300'
         }`}
       >
         <span
