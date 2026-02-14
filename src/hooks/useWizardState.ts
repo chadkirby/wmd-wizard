@@ -38,13 +38,6 @@ function mapLogicalToActual(logicalStep: number, containerType: ContainerType | 
   return logicalStep;
 }
 
-function mapActualToLogical(actualStep: number, containerType: ContainerType | null): number {
-  if (containerType === 'sachet' && actualStep >= 4) {
-    return actualStep - 1;
-  }
-  return actualStep;
-}
-
 export function useWizardState() {
   const [state, setState] = useState<WizardState>(INITIAL_STATE);
   const [logicalStep, setLogicalStep] = useState(0);

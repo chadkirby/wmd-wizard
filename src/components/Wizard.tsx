@@ -1,5 +1,6 @@
 import { useWizardState } from '../hooks/useWizardState';
 import { ProgressBar } from './ProgressBar';
+import { RequirementsSnapshot } from './RequirementsSnapshot';
 import { MachineResults } from './MachineResults';
 import { ContainerStep } from './steps/ContainerStep';
 import { ProductStep } from './steps/ProductStep';
@@ -56,6 +57,10 @@ export function Wizard() {
           <ProgressBar
             labels={visibleStepLabels}
             currentIndex={logicalStep}
+            onStepClick={goTo}
+          />
+          <RequirementsSnapshot
+            state={state}
             onStepClick={goTo}
           />
         </div>
