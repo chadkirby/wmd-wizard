@@ -24,15 +24,14 @@ export function Wizard() {
     matchedMachines,
     accessories,
     visibleStepLabels,
-    checkViability,
   } = useWizardState();
 
   const renderStep = () => {
     switch (currentStep) {
       case 0: return <ContainerStep state={state} update={update} />;
-      case 1: return <ProductStep state={state} update={update} checkViability={checkViability} />;
+      case 1: return <ProductStep state={state} update={update} />;
       case 2: return <DetailsStep state={state} update={update} />;
-      case 3: return <ClosureStep state={state} update={update} checkViability={checkViability} />;
+      case 3: return <ClosureStep state={state} update={update} />;
       case 4: return <ProductionStep state={state} update={update} />;
       case 5: return <ExtrasStep state={state} update={update} />;
       case 6: return <ResultsStep state={state} update={update} matchedMachines={matchedMachines} accessories={accessories} />;
@@ -63,17 +62,23 @@ export function Wizard() {
       </header>
 
       {/* Main content */}
-      <div className="flex-1 flex">
-        {/* Wizard area */}
-        <main className="flex-1 lg:max-w-[60%] overflow-y-auto pb-24 lg:pb-8">
-          {renderStep()}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Wizard area (Left Column) */}
+        <main className="flex-1 lg:max-w-[60%] flex flex-col relative">
 
-          {/* Desktop navigation (hidden on mobile where the fixed bottom bar handles it) */}
-          <div className="hidden lg:flex items-center justify-between max-w-lg mx-auto px-4 pb-8">
+          {/* Scrollable Step Content */}
+          <div className="flex-1 overflow-y-auto">
+            {renderStep()}
+            {/* Spacer for mobile nav (hidden on desktop) */}
+            <div className="h-24 lg:hidden"></div>
+          </div>
+
+          {/* Desktop Navigation Footer (Standard Flex Item) */}
+          <div className="hidden lg:flex items-center justify-between w-full max-w-2xl mx-auto px-6 py-6 border-t border-gray-100 bg-white">
             <button
               onClick={back}
               disabled={isFirst}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+              className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors ${
                 isFirst
                   ? 'text-gray-300 cursor-not-allowed'
                   : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
@@ -86,9 +91,9 @@ export function Wizard() {
               <button
                 onClick={next}
                 disabled={!canProceed}
-                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors shadow-sm ${
                   canProceed
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -100,8 +105,8 @@ export function Wizard() {
           </div>
         </main>
 
-        {/* Desktop sidebar */}
-        <aside className="hidden lg:block w-[40%] border-l border-gray-200 bg-gray-50 sticky top-[106px] h-[calc(100vh-106px)]">
+        {/* Desktop sidebar (Right Column) */}
+        <aside className="hidden lg:block w-[40%] border-l border-gray-200 bg-gray-50 overflow-y-auto">
           <MachineResults machines={matchedMachines} accessories={accessories} />
         </aside>
       </div>

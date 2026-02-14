@@ -6,7 +6,6 @@ import { ToggleField } from '../ToggleField';
 interface Props {
   state: WizardState;
   update: <K extends keyof WizardState>(field: K, value: WizardState[K]) => void;
-  checkViability: (updates: Partial<WizardState>) => boolean;
 }
 
 const productOptions: { value: ProductType; icon: string; label: string; desc: string }[] = [
@@ -26,7 +25,7 @@ const industryOptions: { value: Industry; label: string }[] = [
   { value: 'home-care', label: 'Home Care' },
 ];
 
-export function ProductStep({ state, update, checkViability }: Props) {
+export function ProductStep({ state, update }: Props) {
   return (
     <StepContainer
       title="Tell us about your product"
@@ -35,20 +34,16 @@ export function ProductStep({ state, update, checkViability }: Props) {
       <div className="space-y-6">
         {/* Product type */}
         <div className="grid grid-cols-2 gap-3">
-          {productOptions.map((opt) => {
-            const isViable = checkViability({ productType: opt.value });
-            return (
-              <SelectionCard
-                key={opt.value}
-                icon={opt.icon}
-                label={opt.label}
-                description={opt.desc}
-                selected={state.productType === opt.value}
-                disabled={!isViable}
-                onClick={() => update('productType', opt.value)}
-              />
-            );
-          })}
+          {productOptions.map((opt) => (
+            <SelectionCard
+              key={opt.value}
+              icon={opt.icon}
+              label={opt.label}
+              description={opt.desc}
+              selected={state.productType === opt.value}
+              onClick={() => update('productType', opt.value)}
+            />
+          ))}
         </div>
 
         {/* Product characteristics */}
@@ -58,21 +53,18 @@ export function ProductStep({ state, update, checkViability }: Props) {
             label="Contains chunks or solids"
             description="e.g., salsa, fruit filling, dressings with herbs"
             checked={state.hasChunks}
-            disabled={!state.hasChunks && !checkViability({ hasChunks: true })}
             onChange={(v) => update('hasChunks', v)}
           />
           <ToggleField
             label="Foamy product"
             description="Tends to foam during filling (may need diving nozzles)"
             checked={state.isFoamy}
-            disabled={!state.isFoamy && !checkViability({ isFoamy: true })}
             onChange={(v) => update('isFoamy', v)}
           />
           <ToggleField
             label="Combustible or flammable"
             description="Requires ATEX-certified equipment"
             checked={state.isCombustible}
-            disabled={!state.isCombustible && !checkViability({ isCombustible: true })}
             onChange={(v) => update('isCombustible', v)}
           />
         </div>
