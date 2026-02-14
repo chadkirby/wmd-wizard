@@ -25,6 +25,7 @@ export function Wizard() {
     matchedMachines,
     accessories,
     visibleStepLabels,
+    maxUnlockedStep,
   } = useWizardState();
 
   const renderStep = () => {
@@ -57,6 +58,7 @@ export function Wizard() {
           <ProgressBar
             labels={visibleStepLabels}
             currentIndex={logicalStep}
+            maxUnlockedIndex={maxUnlockedStep}
             onStepClick={goTo}
           />
           {!isLast && (

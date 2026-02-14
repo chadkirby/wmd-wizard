@@ -38,6 +38,37 @@ function mapLogicalToActual(logicalStep: number, containerType: ContainerType | 
   return logicalStep;
 }
 
+function getSelectionProgressByLogicalStep(state: WizardState): boolean[] {
+  const base = [
+    state.containerType !== null,
+    state.productType !== null,
+    state.fillVolumeMin !== null ||
+      state.fillVolumeMax !== null ||
+      state.bottleMaterial !== null ||
+      state.pouchStyle !== null ||
+      state.hasSpouted,
+    !state.needsCapping || state.closureType !== null,
+    state.throughputTarget !== null || state.automationLevel !== null,
+    state.wantsNitrogen ||
+      state.wantsRinsing ||
+      state.wantsLabeling ||
+      state.wantsDatePrinting ||
+      state.wantsHeated,
+    state.contactName.trim().length > 0 ||
+      state.contactCompany.trim().length > 0 ||
+      state.contactEmail.trim().length > 0 ||
+      state.contactPhone.trim().length > 0 ||
+      state.contactNotes.trim().length > 0,
+  ];
+
+  if (state.containerType === 'sachet') {
+    // Sachets skip closure, so remove that logical slot.
+    return base.filter((_, i) => i !== 3);
+  }
+
+  return base;
+}
+
 export function useWizardState() {
   const [state, setState] = useState<WizardState>(INITIAL_STATE);
   const [logicalStep, setLogicalStep] = useState(0);
@@ -90,6 +121,19 @@ export function useWizardState() {
     return STEP_LABELS;
   }, [state.containerType]);
 
+  const maxUnlockedStep = useMemo(() => {
+    const progress = getSelectionProgressByLogicalStep(state);
+    let furthestSelected = 0;
+
+    progress.forEach((hasSelection, index) => {
+      if (hasSelection) {
+        furthestSelected = index;
+      }
+    });
+
+    return Math.min(stepCount - 1, Math.max(logicalStep, furthestSelected + 1));
+  }, [logicalStep, state, stepCount]);
+
   return {
     state,
     update,
@@ -106,6 +150,7 @@ export function useWizardState() {
     matchedMachines,
     accessories,
     visibleStepLabels,
+    maxUnlockedStep,
     checkViability: (updates: Partial<WizardState>) => {
       const nextState = { ...state, ...updates };
       return filterMachines(nextState, machines).length > 0;

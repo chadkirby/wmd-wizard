@@ -1,10 +1,11 @@
 interface ProgressBarProps {
   labels: string[];
   currentIndex: number;
+  maxUnlockedIndex: number;
   onStepClick: (index: number) => void;
 }
 
-export function ProgressBar({ labels, currentIndex, onStepClick }: ProgressBarProps) {
+export function ProgressBar({ labels, currentIndex, maxUnlockedIndex, onStepClick }: ProgressBarProps) {
   return (
     <div className="w-full px-2 py-4">
       {/* Mobile: compact dots */}
@@ -12,11 +13,11 @@ export function ProgressBar({ labels, currentIndex, onStepClick }: ProgressBarPr
         {labels.map((label, i) => (
           <button
             key={label}
-            onClick={() => i <= currentIndex && onStepClick(i)}
+            onClick={() => i <= maxUnlockedIndex && onStepClick(i)}
             className={`h-2.5 rounded-full transition-all duration-300 ${
               i === currentIndex
                 ? 'w-8 bg-blue-600'
-                : i < currentIndex
+                : i <= maxUnlockedIndex
                 ? 'w-2.5 bg-blue-400 cursor-pointer'
                 : 'w-2.5 bg-gray-300'
             }`}
@@ -33,9 +34,9 @@ export function ProgressBar({ labels, currentIndex, onStepClick }: ProgressBarPr
         {labels.map((label, i) => (
           <div key={label} className="flex items-center">
             <button
-              onClick={() => i <= currentIndex && onStepClick(i)}
+              onClick={() => i <= maxUnlockedIndex && onStepClick(i)}
               className={`flex items-center gap-2 transition-colors ${
-                i <= currentIndex ? 'cursor-pointer' : 'cursor-default'
+                i <= maxUnlockedIndex ? 'cursor-pointer' : 'cursor-default'
               }`}
             >
               <span
