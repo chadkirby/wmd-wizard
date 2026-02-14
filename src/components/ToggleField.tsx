@@ -20,6 +20,7 @@ export function ToggleField({ label, description, checked, disabled = false, onC
       <button
         role="switch"
         type="button"
+        aria-label={label}
         aria-checked={checked}
         disabled={disabled}
         onClick={() => {
