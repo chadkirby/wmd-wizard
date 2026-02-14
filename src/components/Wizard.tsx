@@ -9,11 +9,13 @@ import { ClosureStep } from './steps/ClosureStep';
 import { ProductionStep } from './steps/ProductionStep';
 import { ExtrasStep } from './steps/ExtrasStep';
 import { ResultsStep } from './steps/ResultsStep';
+import type { RequirementRow } from '../utils/requirements';
 
 export function Wizard() {
   const {
     state,
     update,
+    updateMany,
     currentStep,
     logicalStep,
     isFirst,
@@ -28,6 +30,10 @@ export function Wizard() {
     maxUnlockedStep,
     checkViability,
   } = useWizardState();
+
+  const clearRequirement = (row: RequirementRow) => {
+    updateMany(row.clearUpdates);
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -66,6 +72,7 @@ export function Wizard() {
             <RequirementsSnapshot
               state={state}
               onStepClick={goTo}
+              onClearRequirement={clearRequirement}
             />
           )}
         </div>
