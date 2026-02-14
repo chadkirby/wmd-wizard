@@ -6,6 +6,7 @@ import { ToggleField } from '../ToggleField';
 interface Props {
   state: WizardState;
   update: <K extends keyof WizardState>(field: K, value: WizardState[K]) => void;
+  checkViability: (updates: Partial<WizardState>) => boolean;
 }
 
 const bottleClosures: { value: ClosureType; icon: string; label: string }[] = [
@@ -28,7 +29,7 @@ const bucketClosures: { value: ClosureType; icon: string; label: string }[] = [
   { value: 'press-on', icon: '⬇️', label: 'Press-on Lid' },
 ];
 
-export function ClosureStep({ state, update }: Props) {
+export function ClosureStep({ state, update, checkViability }: Props) {
   const isPouch = state.containerType === 'pouch';
   const isBucket = state.containerType === 'bucket';
 
@@ -45,6 +46,7 @@ export function ClosureStep({ state, update }: Props) {
             label="Capping needed"
             description="Uncheck if you only need a filling machine (no capper)"
             checked={state.needsCapping}
+            disabled={state.needsCapping && !checkViability({ needsCapping: false, closureType: 'none' })}
             onChange={(v) => {
               update('needsCapping', v);
               if (!v) update('closureType', 'none');
@@ -60,6 +62,7 @@ export function ClosureStep({ state, update }: Props) {
                 icon={opt.icon}
                 label={opt.label}
                 selected={state.closureType === opt.value}
+                disabled={state.closureType !== opt.value && !checkViability({ closureType: opt.value })}
                 onClick={() => update('closureType', opt.value)}
               />
             ))}
