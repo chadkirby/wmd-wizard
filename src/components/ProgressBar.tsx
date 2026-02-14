@@ -29,7 +29,7 @@ export function ProgressBar({ labels, currentIndex, onStepClick }: ProgressBarPr
       </div>
 
       {/* Desktop: full step labels */}
-      <div className="hidden sm:flex items-center justify-between max-w-2xl mx-auto">
+      <div className="hidden sm:flex items-center justify-between w-full">
         {labels.map((label, i) => (
           <div key={label} className="flex items-center">
             <button

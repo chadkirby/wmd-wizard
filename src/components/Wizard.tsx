@@ -59,10 +59,12 @@ export function Wizard() {
             currentIndex={logicalStep}
             onStepClick={goTo}
           />
-          <RequirementsSnapshot
-            state={state}
-            onStepClick={goTo}
-          />
+          {!isLast && (
+            <RequirementsSnapshot
+              state={state}
+              onStepClick={goTo}
+            />
+          )}
         </div>
       </header>
 

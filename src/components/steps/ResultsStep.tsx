@@ -3,6 +3,7 @@ import type { Machine, WizardState } from '../../types';
 import { StepContainer } from '../StepContainer';
 import { MachineCard } from '../MachineCard';
 import { buildMailtoUrl, buildSummaryText } from '../../utils/composeEmail';
+import { getRequirementRows } from '../../utils/requirements';
 
 interface Props {
   state: WizardState;
@@ -12,13 +13,15 @@ interface Props {
 }
 
 export function ResultsStep({ state, update, matchedMachines, accessories }: Props) {
-  const [copied, setCopied] = useState(false);
+  const [copiedRequirements, setCopiedRequirements] = useState(false);
+  const [copiedSummary, setCopiedSummary] = useState(false);
+  const requirements = getRequirementRows(state);
+  const requirementsText = requirements.map((row) => `${row.label}: ${row.value}`).join('\n');
 
   const handleCopy = async () => {
-    const text = buildSummaryText(state, matchedMachines);
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    await navigator.clipboard.writeText(requirementsText);
+    setCopiedRequirements(true);
+    setTimeout(() => setCopiedRequirements(false), 2000);
   };
 
   const mailtoUrl = buildMailtoUrl(state, matchedMachines);
@@ -29,6 +32,36 @@ export function ResultsStep({ state, update, matchedMachines, accessories }: Pro
       subtitle={`${matchedMachines.length} machine${matchedMachines.length !== 1 ? 's' : ''} match your requirements`}
     >
       <div className="space-y-6">
+        {/* Requirements summary */}
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700">Requirements</h3>
+            <button
+              onClick={handleCopy}
+              disabled={requirements.length === 0}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                requirements.length === 0
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {copiedRequirements ? 'Copied!' : 'Copy requirements'}
+            </button>
+          </div>
+          {requirements.length === 0 ? (
+            <p className="text-xs text-gray-500">No requirements selected yet.</p>
+          ) : (
+            <dl className="space-y-2">
+              {requirements.map((row) => (
+                <div key={`${row.label}-${row.value}`} className="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-1 sm:gap-3 text-sm">
+                  <dt className="font-medium text-gray-600">{row.label}</dt>
+                  <dd className="text-gray-800">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+
         {/* Contact info */}
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-gray-700">Your contact information</h3>
@@ -109,10 +142,15 @@ export function ResultsStep({ state, update, matchedMachines, accessories }: Pro
             <span>📧</span> Email WMD Sales
           </a>
           <button
-            onClick={handleCopy}
+            onClick={async () => {
+              const text = buildSummaryText(state, matchedMachines);
+              await navigator.clipboard.writeText(text);
+              setCopiedSummary(true);
+              setTimeout(() => setCopiedSummary(false), 2000);
+            }}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors text-sm"
           >
-            {copied ? '✓ Copied!' : '📋 Copy Summary'}
+            {copiedSummary ? '✓ Copied!' : '📋 Copy Full Summary'}
           </button>
         </div>
       </div>
