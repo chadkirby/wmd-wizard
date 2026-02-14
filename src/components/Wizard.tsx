@@ -15,7 +15,6 @@ export function Wizard() {
     update,
     currentStep,
     logicalStep,
-    stepCount,
     isFirst,
     isLast,
     next,
@@ -41,7 +40,7 @@ export function Wizard() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen lg:h-screen flex flex-col lg:overflow-hidden">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4">
@@ -140,7 +139,11 @@ export function Wizard() {
       </nav>
 
       {/* Mobile machine results (floating badge + bottom sheet) */}
-      {!isLast && <MachineResults machines={matchedMachines} accessories={accessories} />}
+      {!isLast && (
+        <div className="lg:hidden">
+          <MachineResults machines={matchedMachines} accessories={accessories} />
+        </div>
+      )}
     </div>
   );
 }
