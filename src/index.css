@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --color-wmd: #1e40af;
+  --color-wmd-light: #3b82f6;
+  --color-wmd-dark: #1e3a8a;
+  --color-accent: #f59e0b;
+  --color-match: #059669;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, sans-serif; margin: 0; background: #f8fafc; color: #1e293b; }
