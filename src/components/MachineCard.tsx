@@ -77,15 +77,17 @@ export function MachineCard({ machine, compact = false }: MachineCardProps) {
               </p>
             )}
 
-            <button
+            <a
+              href={machine.url}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={(e) => {
                 e.stopPropagation();
-                // Add explicit action or link handler here if needed in future
               }}
               className="mt-4 w-full py-2 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
             >
               View Full Specs
-            </button>
+            </a>
           </div>
         </div>
       )}
